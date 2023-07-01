@@ -1,32 +1,45 @@
-class Solution {
-  public:
-    // Function to return Breadth First Traversal of given graph.
-    vector<int> bfsOfGraph(int v, vector<int> adj[])
+#include<bits/stdc++.h>
+vector<int> BFS(int numVertices, vector<pair<int, int>> edges)
+{
+    vector<vector<int>> adjacencyList(numVertices);
+    vector<int> visited(numVertices, 0);
+    vector<int> path;
+    queue<int> q;
+    
+    for(int i=0; i<edges.size(); i++)
     {
-        vector<int> ans;
-        vector<bool> visited(v+1, false);
-        queue<int> q;
-        
-        visited[0] = true;
-        q.push(0);
-        
-        while(!q.empty())
+        adjacencyList[edges[i].first].push_back(edges[i].second);
+        adjacencyList[edges[i].second].push_back(edges[i].first);
+    }
+    
+    for(int i=0; i<numVertices; i++)
+        sort(adjacencyList[i].begin(), adjacencyList[i].end());
+
+    for(int i=0; i<numVertices; i++)
+    {
+        if(!visited[i])
         {
-            int front = q.front();
-            q.pop();
+            q.push(i);
+            visited[i] = 1;
             
-            ans.push_back(front);
-            
-            for(auto &i : adj[front])
+            while(!q.empty())
             {
-                if(!visited[i])
+                int node = q.front();
+                q.pop();
+
+                path.push_back(node);
+                
+                for(auto& neighbor:adjacencyList[node])
                 {
-                    q.push(i);
-                    visited[i] = true;
+                    if(!visited[neighbor])
+                    {
+                        visited[neighbor] = 1;
+                        q.push(neighbor);
+                    }
                 }
             }
         }
-        
-        return ans;
     }
-};
+    
+    return path;
+}
